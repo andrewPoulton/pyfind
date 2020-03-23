@@ -61,29 +61,21 @@ fn list_files(path: &str, query: &str)-> (){
 }
 
 fn search_file(path: &Path, query: &str)->(){
-    match fstream::contains(path, query) {
-        Some(b) => {
-            if b {
-                match fstream::read_lines(path) {
-                    Some(lines) => {
-                        for (_pos, line) in &mut lines.iter().enumerate(){
-                            if line.contains(query){
-                                if line.contains("def "){
-                                    println!("{}:{}", path.to_str().unwrap().red(), _pos.to_string().red());
-                                    break;
-                                } else{
-                                    println!("{}:{}", path.to_str().unwrap(), (_pos+1).to_string());
-                                }
-                                
-                            }
+    if let Some(true) = fstream::contains(path, query) {
+        match fstream::read_lines(path) {
+            Some(lines) => {
+                for (_pos, line) in &mut lines.iter().enumerate(){
+                    if line.contains(query){
+                        if line.contains("def "){
+                            println!("{}:{}", path.to_str().unwrap().red(), (_pos+1).to_string().red());
+                            break;
+                        } else{
+                            println!("{}:{}", path.to_str().unwrap(), (_pos+1).to_string());
                         }
                     }
-                    None => println!("Error reading file")
-
                 }
             }
+            None => println!("Error reading file")
         }
-        None => println!("Error searching file: {}", path.to_str().unwrap())
     }
-
 }
